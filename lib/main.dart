@@ -1,62 +1,56 @@
 import 'package:flutter/material.dart';
-import 'features/todos/screens/todo_list_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:learning_app_flutter/core/di/providers.dart';
+import 'package:learning_app_flutter/presentation/router/app_router.dart';
 
 void main() {
-  runApp(const TodoApp());
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-// Основной виджет приложения
-class TodoApp extends StatelessWidget {
-  const TodoApp({super.key});
+class MyApp extends ConsumerWidget {
+  const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      // Название приложения
-      title: 'Todo App',
-      
-      // Настройка темы приложения
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+    
+    return MaterialApp.router(
+      title: 'Learning App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // Основной цвет приложения
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
-        
-        // Настройка AppBar
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blue.shade500,
-          foregroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+        fontFamily: 'Roboto',
+        // Настройка стилей UI компонентов
+        appBarTheme: const AppBarTheme(
           centerTitle: true,
-          elevation: 2,
+          elevation: 0,
         ),
-        
-        // Настройка карточек
-        cardTheme: const CardTheme(
-          elevation: 2,
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          filled: true,
+          fillColor: Colors.grey.shade50,
         ),
-        
-        // Настройка кнопок
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 24,
+            ),
           ),
         ),
-        
-        // Настройка плавающей кнопки
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.blue.shade500,
-          foregroundColor: Colors.white,
-        ),
       ),
-      
-      // Отключаем баннер debug
-      debugShowCheckedModeBanner: false,
-      
-      // Устанавливаем домашний экран - список задач
-      home: const TodoListScreen(),
+      // Подключаем GoRouter
+      routerConfig: router,
     );
   }
-}
+} 
